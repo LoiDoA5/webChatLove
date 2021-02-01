@@ -1,112 +1,148 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import './Chat.scss';
-
-import WebSocketInstance from '../../services/WebSocket'
+import Sockette from 'sockette'
+import {Container, Form, Row, Input, Button} from 'reactstrap'
+import classnames from 'classnames'
 
 export default class Chat extends Component {
   constructor(props) {
     super(props);
-    this.state = {}
-
-    this.waitForSocketConnection(() => {
-      WebSocketInstance.initChatUser(this.props.currentUser);
-      WebSocketInstance.addCallbacks(this.setMessages.bind(this), this.addMessage.bind(this))
-      WebSocketInstance.fetchMessages(this.props.currentUser);
-    });
+    this.state = {
+      messages: [],
+      message: '',
+      rows: 1,
+    }
+    this.initChat = this.initChat.bind(this)
+    this.sendMessage = this.sendMessage.bind(this)
+    this.receiveMessage = this.receiveMessage.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.rcMe = this.rcMe.bind(this)
+    this.rcMes = this.rcMes.bind(this)
   }
 
-  waitForSocketConnection(callback) {
-    const component = this;
-    setTimeout(
-      function () {
-        // Check if websocket state is OPEN
-        if (WebSocketInstance.state() === 1) {
-          console.log("Connection is made")
-          callback();
-          return;
-        } else {
-          console.log("wait for connection...")
-          component.waitForSocketConnection(callback);
-        }
-    }, 100); // wait 100 milisecond for the connection...
+  rcMe (message) {
+    let messages = this.state.messages.slice(0);
+    messages.push(message)
+    this.setState({ messages: messages })
+  }
+
+  rcMes (ms) {
+    let messages = this.state.messages.slice(0);
+    this.setState({ messages: messages.concat(ms) })
+  }
+
+  sendMessage (e) {
+    e.preventDefault()
+    const {message} = this.state;
+    this.ws.json({
+      message,
+    })
+  }
+
+  handleChange (e) {
+    let {rows} = this.state;
+
+    const message = e.target.value;
+    rows = message.split('\n').length;
+    this.setState({
+      ...this.state,
+      message,
+    })
+  }
+
+  receiveMessage (e) {
+    const data = JSON.parse(e.data)
+    if (!data) {
+      return;
+    }
+
+    if (data.message) {
+      this.rcMe(data.message);
+    }
+
+    if (data.messages) {
+      this.rcMes(data.messages);
+    }
+  }
+
+  initChat (e) {
+    if (this.isInitSuccess) {
+      return;
+    }
+    this.ws.json({
+      'action': 'fetch_messages',
+    })
+    this.isInitSuccess = true;
   }
 
   componentDidMount() {
-    this.scrollToBottom();
-  }
-
-  componentDidUpdate() {
-    this.scrollToBottom();
-  }
-
-  scrollToBottom = () => {
-    const chat = this.messagesEnd;
-    const scrollHeight = chat.scrollHeight;
-    const height = chat.clientHeight;
-    const maxScrollTop = scrollHeight - height;
-    chat.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
-  }
-
-  addMessage(message) {
-    this.setState({ messages: [...this.state.messages, message]});
-  }
-
-  setMessages(messages) {
-    this.setState({ messages: messages.reverse()});
-  }
-
-  messageChangeHandler = (event) =>  {
-    this.setState({
-      message: event.target.value
-    })
-  }
-
-  sendMessageHandler = (e, message) => {
-    const messageObject = {
-      from: this.props.currentUser,
-      text: message
-    };
-    WebSocketInstance.newChatMessage(messageObject);
-    this.setState({
-      message: ''
-    })
-    e.preventDefault();
-  }
-
-  renderMessages = (messages) => {
-    const currentUser = this.props.currentUser;
-    return messages.map((message, i) => <li key={message.id} className={message.author === currentUser ? 'me' : 'him'}> <h4 className='author'>{ message.author } </h4><p>{ message.content }</p></li>);
+    const {room_id} = this.props.match.params;
+    const userLogin = JSON.parse(localStorage.getItem('user'))
+    this.ws = new Sockette('ws://localhost:8000/ws/chat/' + room_id + '/?' + userLogin.token, {
+      timeout: 5e3,
+      maxAttempts: 10,
+      onopen:  this.initChat,
+      onmessage: this.receiveMessage,
+      onreconnect: e => console.log('Reconnecting...', e),
+      onmaximum: e => console.log('Stop Attempting!', e),
+      onclose: e => console.log('Closed!', e),
+      onerror: e => console.log('Error:', e)
+    });
   }
 
   render() {
-    const messages = this.state.messages;
-    const currentUser = this.props.currentUser;
+    let lastUsername = ''
+    const userLogin = JSON.parse(localStorage.getItem('user'))
     return (
-      <div className='chat'>
-        <div className='container'>
-          <h1>Chatting as {currentUser} </h1>
-          <h3>Displaying only the last 50 messages</h3>
-          <ul ref={(el) => { this.messagesEnd = el; }}>
-           { 
-              messages && 
-              this.renderMessages(messages) 
-           }
-          </ul>
-        </div>
-        <div className='container message-form'>
-          <form onSubmit={(e) => this.sendMessageHandler(e, this.state.message)} className='form'>
-            <input
-              type='text'
-              onChange={this.messageChangeHandler}
-              value={this.state.message}
-              placeholder='Type a Message'
-              required />
-            <button className='submit' type='submit' value='Submit'>
-              Send
-            </button>
-          </form>
-        </div>
-      </div>
-    );
+
+      <Fragment>
+        <Container fluid>
+          <Row>
+            <div style={{width: '100%'}}>
+              <Form>
+                <div id='chat'>
+                  <div className='messages'>
+                    {
+                      this.state.messages !== undefined && this.state.messages.map((message, index) => {
+                        let displayUsername = false;
+                        if (lastUsername !== message.username) {
+                          displayUsername = true;
+                          lastUsername = message.username
+                        }
+                        return (
+                          <div className={classnames({
+                            'd-flex': true,
+                            'flex-row': !message.username !== userLogin.username,
+                            'flex-row-reverse': message.username === userLogin.username,
+                          })} key={index}>
+                            <div className='message p-2'>
+                              {
+                                displayUsername && (
+                                  <strong>{message.username}: </strong>
+                                )
+                              }
+                              {message.message}
+                            </div>
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
+                  <div className='chat-enter-message-box'>
+                    <Input type='textarea' name='message' onChange={this.handleChange} value={this.state.message}
+                           rows={this.state.message.split('\n').length}/>
+                    <Button color='primary' 
+                    onClick={this.sendMessage}
+                    >
+                      {"Send"}
+                    </Button>
+                  </div>
+                </div>
+              </Form>
+            </div>
+          </Row>
+        </Container>
+      </Fragment>
+    )
   }
 }

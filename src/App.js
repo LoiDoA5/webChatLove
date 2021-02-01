@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
 import InitChat from './components/InitChat'
-import Chat from './components/Chat'
-import WebSocketInstance from './services/WebSocket'
+// import Chat from './components/Chat'
+// import WebSocketInstance from './services/WebSocket'
+import LoginPage from './components/Login'
 
 export default class App extends Component {
   constructor(props) {
@@ -13,25 +14,21 @@ export default class App extends Component {
     };
   }
 
-  handleLoginSubmit = (username) => {
-    this.setState({ loggedIn: true, username: username });
-    WebSocketInstance.connect();
-  }
 
   render() {
     const { 
       loggedIn,
-      username
+      // username
     } = this.state;
 
     return (
       <div className="App">
         { 
-          loggedIn ?
-          <Chat
-            currentUser={username}
-          />
-          :
+          !loggedIn ? <LoginPage/> :
+          // <Chat
+          //   currentUser={username}
+          // />
+          // :
           <InitChat
             onSubmit={this.handleLoginSubmit}
             usernameChangeHandler={this.usernameChangeHandler}
