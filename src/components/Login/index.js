@@ -9,6 +9,7 @@ import {
   } from 'reactstrap';
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
+import config from '../../config';
 
 const LoginPage = () => {
   const [creds, setCreds] = useState({})
@@ -16,7 +17,7 @@ const LoginPage = () => {
 
   const login = (e) => {
     e.preventDefault()
-    axios.post('http://127.0.0.1:8000/api/accounts/login', creds)
+    axios.post(`${config.API_PATH}/accounts/login`, creds)
         .then(function (response) {
             localStorage.setItem('user', JSON.stringify(response.data));
             axios.defaults.headers.common['Authorization'] = `Token ${response.data.token}`

@@ -16,7 +16,7 @@ class WebSocketService {
   }
 
   connect() {
-    const path = config.API_PATH;
+    const path = config.WS_PATH;
     this.socketRef = new WebSocket(path);
     this.socketRef.onopen = () => {
       console.log('WebSocket open');

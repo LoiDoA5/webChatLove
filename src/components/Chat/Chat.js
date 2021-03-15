@@ -3,6 +3,7 @@ import './Chat.scss';
 import Sockette from 'sockette'
 import {Container, Form, Row, Input, Button} from 'reactstrap'
 import classnames from 'classnames'
+import config from '../../config';
 
 export default class Chat extends Component {
   constructor(props) {
@@ -78,7 +79,7 @@ export default class Chat extends Component {
   componentDidMount() {
     const {room_id} = this.props.match.params;
     const userLogin = JSON.parse(localStorage.getItem('user'))
-    this.ws = new Sockette('ws://localhost:8000/ws/chat/' + room_id + '/?' + userLogin.token, {
+    this.ws = new Sockette(config.WS_PATH + room_id + '/?' + userLogin.token, {
       timeout: 5e3,
       maxAttempts: 10,
       onopen:  this.initChat,

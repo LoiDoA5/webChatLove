@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, Button } from 'reactstrap';
 import { useHistory } from "react-router-dom";
+import config from '../../config';
 
 const RoomList = () => {
   const [listRoom, setListRoom] = useState([])
@@ -11,7 +12,7 @@ const RoomList = () => {
   useEffect(() => {
     const userLogin = JSON.parse(localStorage.getItem('user'))
     axios.defaults.headers.common['Authorization'] = `Token ${userLogin.token}`
-    axios.get('http://127.0.0.1:8000/api/rooms/rooms/')
+    axios.get(`${config.API_PATH}/rooms/rooms/`)
     .then(function (response) {
         setListRoom(response.data.results)
     })
@@ -21,7 +22,7 @@ const RoomList = () => {
   }, []);
 
   const joinRoom = (index) => {
-    axios.post('http://127.0.0.1:8000/api/rooms/rooms/' + index +'/add_user/')
+    axios.post(`${config.API_PATH}/rooms/rooms/` + index +'/add_user/')
     .then(function (response) {
       if (response.status === 200){
         history.push(`/chat/${index}`);

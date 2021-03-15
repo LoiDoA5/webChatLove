@@ -1,5 +1,7 @@
-const API_PATH = 'ws://localhost:8000/ws/chat';
+const API_PATH = 'https://chatapp-afive.herokuapp.com/api';
+const WS_PATH = 'ws://chatapp-afive.herokuapp.com/ws/chat/';
 
 export default {
-  API_PATH
+  API_PATH,
+  WS_PATH
 };
