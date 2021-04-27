@@ -1,30 +1,32 @@
-import React, { Component } from 'react';
-import './App.css';
-import InitChat from './components/InitChat'
+import React, { Component } from "react";
+import "./App.scss";
+import InitChat from "./components/InitChat";
 // import Chat from './components/Chat'
 // import WebSocketInstance from './services/WebSocket'
-import LoginPage from './components/Login'
+import LoginPage from "./components/Login";
+ 
+ 
 
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      username: '',
-      loggedIn: false
+    this.state = {
+      username: "",
+      loggedIn: false,
     };
   }
 
-
   render() {
-    const { 
+    const {
       loggedIn,
       // username
     } = this.state;
 
     return (
       <div className="App">
-        { 
-          !loggedIn ? <LoginPage/> :
+        {!loggedIn ? (
+          <LoginPage />
+        ) : (
           // <Chat
           //   currentUser={username}
           // />
@@ -33,7 +35,8 @@ export default class App extends Component {
             onSubmit={this.handleLoginSubmit}
             usernameChangeHandler={this.usernameChangeHandler}
           />
-        }
+        )}
+        
       </div>
     );
   }

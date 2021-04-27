@@ -1,0 +1,86 @@
+.login {
+    background-image: url("https://cdn3.vectorstock.com/i/1000x1000/33/92/dating-app-love-chat-logo-for-apps-and-web-vector-27723392.jpg");
+
+    /* Full height */
+    height: 70vh;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    
+
+    .dropmenu {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0;
+        
+    }
+
+    @media only screen and (max-width: 450px) {
+        .dropmenu {
+            display: none;
+        }
+        .button {display: none;}
+    }
+
+
+    
+
+}
+
+.button {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.email {
+    display: flex;
+    justify-content: center;
+    margin: 0px;
+
+    background-color: #FA58AC;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+  
+
+    .col5 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+
+
+    @media only screen and (max-width: 650px) {
+        .col5 {
+            display: none;
+        }
+    }
+  
+   
+    .col7 {
+        color: white;
+    }
+
+}
+
+.buttonapp {
+    margin-left: 100px;
+}
+
+
+
+ .font{
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .appbar {
+      background-color: aqua;
+  }

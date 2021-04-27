@@ -1,15 +1,19 @@
 import React, { Component, Fragment } from 'react';
 import './Chat.scss';
 import Sockette from 'sockette'
-import {Container, Form, Row, Input, Button} from 'reactstrap'
+import {Container, Form, Row, Input, Button,Col,} from 'reactstrap'
 import classnames from 'classnames'
 import config from '../../config';
+import ButtonAppBarChat from './appBarChat';
+ 
+import Footer from '../Sign/footer';
 
 export default class Chat extends Component {
   constructor(props) {
     super(props);
     this.state = {
       messages: [],
+      myMess: [],
       message: '',
       rows: 1,
     }
@@ -94,10 +98,55 @@ export default class Chat extends Component {
   render() {
     let lastUsername = ''
     const userLogin = JSON.parse(localStorage.getItem('user'))
-    return (
 
-      <Fragment>
-        <Container fluid>
+
+    return (
+      
+
+      <Fragment style={{height:'100vh'}} >
+
+        <div >
+
+      <ButtonAppBarChat/>
+      
+       </div>
+
+    
+       <div className='ButtonAppBarChat' style={{ height:'100vh'}}>
+       <Col sm="5" className="col5" 
+       
+       >
+         
+       <ol
+            style={{ maxWidth: "80%" }}
+            method="post"
+            action=""
+            className="font"
+          >
+            <p>Nội Quy Phòng Chat</p>
+
+            <li>Không spam tin nhắn.</li>
+            <li>
+              Không up link hoặc ảnh có chứa virut, lôi kéo chater
+            </li>
+            <li>
+             Không gây chiến tranh hoặc có những lời lẽ xúc phạm thành viên cũng như BQT
+            </li>
+            <li>
+              Không chat các vấn đề liên quan tới chính trị 
+            </li>
+            <li>
+            Không quảng cáo tại wap cũng như web dưới mọi hình thức khi chưa được sự cho phép của BQT.
+            </li>
+            <li>
+              Tôn Trọng tất cả thành viên trong nhóm.
+            </li>
+          </ol>
+
+       </Col>
+   
+       <Col xs="12" sm="7" className="col7"> 
+        <Container fluid className='chatRoom'>
           <Row>
             <div style={{width: '100%'}}>
               <Form>
@@ -130,12 +179,15 @@ export default class Chat extends Component {
                     }
                   </div>
                   <div className='chat-enter-message-box'>
-                    <Input type='textarea' name='message' onChange={this.handleChange} value={this.state.message}
+                    <Input type='textarea' name='message' 
+                    style={{ maxWidth: "90%" }}
+                    onChange={this.handleChange} 
+                    value={this.state.message}
                            rows={this.state.message.split('\n').length}/>
-                    <Button color='primary' 
+                    <Button style={{background:'#FE2E64'}} 
                     onClick={this.sendMessage}
                     >
-                      {"Send"}
+                      {"Gửi"}
                     </Button>
                   </div>
                 </div>
@@ -143,6 +195,14 @@ export default class Chat extends Component {
             </div>
           </Row>
         </Container>
+        </Col>
+
+
+        
+        </div>
+       
+       <Footer/>
+      
       </Fragment>
     )
   }

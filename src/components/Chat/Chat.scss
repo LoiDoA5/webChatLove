@@ -117,3 +117,28 @@ $grey: #eee;
     }
   }
 }
+
+
+.ButtonAppBarChat{
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FA58AC;
+  color: white;
+
+        .col5 {
+           
+          color: white;
+      }
+
+
+      @media only screen and (max-width: 750px) {
+        .col5 {
+            display: none;
+        }
+        
+    }
+  
+
+}
