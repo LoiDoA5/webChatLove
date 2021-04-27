@@ -23,6 +23,7 @@ export default class Chat extends Component {
     this.handleChange = this.handleChange.bind(this)
     this.rcMe = this.rcMe.bind(this)
     this.rcMes = this.rcMes.bind(this)
+    this.trySend = this.trySend.bind(this)
   }
 
   rcMe (message) {
@@ -42,6 +43,13 @@ export default class Chat extends Component {
     this.ws.json({
       message,
     })
+    this.setState({message: ''})
+  }
+
+  trySend (e) {
+    if (e.which === 13) {
+      this.sendMessage(e)
+    }
   }
 
   handleChange (e) {
@@ -101,56 +109,10 @@ export default class Chat extends Component {
 
 
     return (
-      
-
       <Fragment style={{height:'100vh'}} >
-
-        <div >
-
-      <ButtonAppBarChat/>
-      
-       </div>
-
-    
-       <div className='ButtonAppBarChat' style={{ height:'100vh'}}>
-       <Col sm="5" className="col5" 
-       
-       >
-         
-       <ol
-            style={{ maxWidth: "80%" }}
-            method="post"
-            action=""
-            className="font"
-          >
-            <p>Nội Quy Phòng Chat</p>
-
-            <li>Không spam tin nhắn.</li>
-            <li>
-              Không up link hoặc ảnh có chứa virut, lôi kéo chater
-            </li>
-            <li>
-             Không gây chiến tranh hoặc có những lời lẽ xúc phạm thành viên cũng như BQT
-            </li>
-            <li>
-              Không chat các vấn đề liên quan tới chính trị 
-            </li>
-            <li>
-            Không quảng cáo tại wap cũng như web dưới mọi hình thức khi chưa được sự cho phép của BQT.
-            </li>
-            <li>
-              Tôn Trọng tất cả thành viên trong nhóm.
-            </li>
-          </ol>
-
-       </Col>
-   
-       <Col xs="12" sm="7" className="col7"> 
-        <Container fluid className='chatRoom'>
-          <Row>
-            <div style={{width: '100%'}}>
-              <Form>
-                <div id='chat'>
+       <div style={{backgroundColor: '#fa58ac'}}>
+        <Container fluid className='chatRoom'
+         style={{height:'100vh'}}>
                   <div className='messages'>
                     {
                       this.state.messages !== undefined && this.state.messages.map((message, index) => {
@@ -178,9 +140,11 @@ export default class Chat extends Component {
                       })
                     }
                   </div>
-                  <div className='chat-enter-message-box'>
-                    <Input type='textarea' name='message' 
-                    style={{ maxWidth: "90%" }}
+                  <div className='chat-enter-message-box' style={{position: 'absolute', 
+                  bottom: 0, width: '96%', display: 'flex', flexDirection: 'row'}}>
+                    <Input type='textarea' name='message'
+                     onKeyDown={this.trySend}
+                    style={{ maxWidth: "100%" }}
                     onChange={this.handleChange} 
                     value={this.state.message}
                            rows={this.state.message.split('\n').length}/>
@@ -190,18 +154,14 @@ export default class Chat extends Component {
                       {"Gửi"}
                     </Button>
                   </div>
-                </div>
-              </Form>
-            </div>
-          </Row>
         </Container>
-        </Col>
+       
 
 
         
         </div>
        
-       <Footer/>
+   
       
       </Fragment>
     )
