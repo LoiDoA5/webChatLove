@@ -31,7 +31,7 @@ const RoomList = () => {
         setListRoom(response.data.results)
     })
     .catch(function (error) {
-        console.log(error);
+        
     })
   }, []);
 

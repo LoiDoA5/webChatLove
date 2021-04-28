@@ -97,7 +97,7 @@ const LoginPage = () => {
 
   const tryLogin = (e) => {
     if (e.which === 13) {
-      console.log('HEloo enter')
+      
       login(e)
     }
   }

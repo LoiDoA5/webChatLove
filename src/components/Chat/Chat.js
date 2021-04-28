@@ -110,6 +110,9 @@ export default class Chat extends Component {
 
     return (
       <Fragment style={{height:'100vh'}} >
+
+      <ButtonAppBarChat/>
+
        <div style={{backgroundColor: '#fa58ac'}}>
         <Container fluid className='chatRoom'
          style={{height:'100vh'}}>

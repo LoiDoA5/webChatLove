@@ -46,13 +46,13 @@ const SignUp = (props) => {
     //    newPassworld2: '',
     //  },
 
-    console.log(creds);
+    
 
     axios
       .post(`${config.API_PATH}/accounts/users/`, creds)
 
       .then(function (response) {
-        console.log("RES", response.status);
+       
         
         if(response.status === 201) {
           history.push("/");
